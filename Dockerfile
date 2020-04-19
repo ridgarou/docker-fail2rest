@@ -14,12 +14,10 @@ COPY docker-entrypoint.sh /entrypoint.sh
 # Make sure the entrypoint is executable
 # Get and install fail2rest
 RUN set -ex; \
-	apk add --no-cache \
-		git build-base \
-	; \
-	chmod 755 /entrypoint.sh; \
+    apk add --no-cache git build-base; \
+    chmod 755 /entrypoint.sh; \
     go get -v github.com/Sean-Der/fail2rest; \
     go install -v github.com/Sean-Der/fail2rest; \
-	ln -s /root/go/bin/fail2rest /usr/bin/
+    ln -s /go/bin/fail2rest /usr/bin/
 
 ENTRYPOINT ["/entrypoint.sh"]
