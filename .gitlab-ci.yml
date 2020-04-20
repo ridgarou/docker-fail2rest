@@ -39,10 +39,10 @@ build:
     - docker buildx ls
     # - docker buildx build --platform $CI_BUILD_ARCHS --progress plain --pull -t "$CI_REGISTRY_IMAGE" --push .
     - echo "*** Construimos la imagen $DOCKER_REGISTRY_URL/$DOCKER_IMAGE_NAME:latest"
-    - docker buildx build . \
-            --platform $CI_BUILD_ARCHS \
-            --file Dockerfile \
-            --cache-to=type=inline \
-            --tag $DOCKER_IMAGE_NAME:latest \
-            --tag $DOCKER_IMAGE_NAME:${flag} \
+    - docker buildx build . 
+            --platform $CI_BUILD_ARCHS 
+            --file Dockerfile 
+            --cache-to=type=inline 
+            --tag $DOCKER_IMAGE_NAME:latest 
+            --tag $DOCKER_IMAGE_NAME:${flag} 
             --output=type=registry
