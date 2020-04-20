@@ -21,14 +21,14 @@ build:
     DOCKER_DRIVER: overlay2
     DOCKER_TLS_CERTDIR: ""
     
-  retry: 2
+  #retry: 2
   
   before_script:
     - flag=$(date +%s)
     - echo "*** Imagen a crear ${DOCKER_REGISTRY_URL}/${DOCKER_USERNAME}/${DOCKER_IMAGE_NAME}:${flag}"
     
     - echo "*** Login de $DOCKER_USERNAME en $DOCKER_REGISTRY_URL"
-    - echo "$DOCKERHUB_TOKEN" | docker login $DOCKER_REGISTRY_URL -u $DOCKER_USERNAME --password-stdin
+    - echo "$DOCKERHUB_TOKEN" | docker login -u "$DOCKER_USERNAME" --password-stdin $DOCKER_REGISTRY_URL
 
     # Use docker-container driver to allow useful features (push/multi-platform)
     - update-binfmts --enable # Important: Ensures execution of other binary formats is enabled in the kernel
