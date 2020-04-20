@@ -38,7 +38,7 @@ build:
   script:
     - docker buildx ls
     # - docker buildx build --platform $CI_BUILD_ARCHS --progress plain --pull -t "$CI_REGISTRY_IMAGE" --push .
-    - echo "*** Construimos la imagen ${{ env.DOCKER_REGISTRY_URL }}/${{ env.DOCKER_IMAGE_NAME }}:latest"
+    - echo "*** Construimos la imagen $DOCKER_REGISTRY_URL/$DOCKER_IMAGE_NAME:latest"
     - docker buildx build . \
             --platform $CI_BUILD_ARCHS \
             --file Dockerfile \
