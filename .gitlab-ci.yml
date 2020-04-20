@@ -1,13 +1,13 @@
 variables:
   CI_BUILD_ARCHS: "linux/arm/v7,linux/arm64,linux/amd64"
-  CI_BUILD_IMAGE: "registry.gitlab.com/ridgarou/docker-fail2rest"
+  # CI_BUILD_IMAGE: "registry.gitlab.com/ridgarou/docker-fail2rest"
 
   DOCKER_REGISTRY_URL: docker.io
   DOCKER_IMAGE_NAME: $DOCKERHUB_USERNAME/docker-fail2rest
   
   DOCKER_REGISTRY_URL: docker.io
 build:
-  image: $CI_BUILD_IMAGE
+  image: $DOCKER_IMAGE_NAME
   
   stage: build
   
