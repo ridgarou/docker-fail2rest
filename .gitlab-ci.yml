@@ -1,0 +1,48 @@
+variables:
+  CI_BUILD_ARCHS: "linux/arm/v7,linux/arm64,linux/amd64"
+  CI_BUILD_IMAGE: "registry.gitlab.com/ridgarou/docker-fail2rest"
+
+  DOCKER_REGISTRY_URL: docker.io
+  DOCKER_IMAGE_NAME: $DOCKERHUB_USERNAME/docker-fail2rest
+  
+  DOCKER_REGISTRY_URL: docker.io
+build:
+  image: $CI_BUILD_IMAGE
+  
+  stage: build
+  
+  services:
+    - name: docker:dind
+      entrypoint: ["env", "-u", "DOCKER_HOST"]
+      command: ["dockerd-entrypoint.sh"]
+      
+  variables:
+    DOCKER_HOST: tcp://docker:2375/
+    DOCKER_DRIVER: overlay2
+    DOCKER_TLS_CERTDIR: ""
+    
+  retry: 2
+  
+  before_script:
+    - flag=$(date +%s)
+    - echo "*** Imagen a crear ${DOCKER_REGISTRY_URL}/${DOCKER_USERNAME}/${DOCKER_IMAGE_NAME}:${flag}"
+    
+    - echo "*** Login de $DOCKER_USERNAME en $DOCKER_REGISTRY_URL"
+    - echo "$DOCKERHUB_TOKEN" | docker login $DOCKER_REGISTRY_URL -u $DOCKER_USERNAME --password-stdin
+
+    # Use docker-container driver to allow useful features (push/multi-platform)
+    - update-binfmts --enable # Important: Ensures execution of other binary formats is enabled in the kernel
+    - docker buildx create --driver docker-container --use
+    - docker buildx inspect --bootstrap
+    
+  script:
+    - docker buildx ls
+    # - docker buildx build --platform $CI_BUILD_ARCHS --progress plain --pull -t "$CI_REGISTRY_IMAGE" --push .
+    - echo "*** Construimos la imagen ${{ env.DOCKER_REGISTRY_URL }}/${{ env.DOCKER_IMAGE_NAME }}:latest"
+    - docker buildx build . \
+            --platform $CI_BUILD_ARCHS \
+            --file Dockerfile \
+            --cache-to=type=inline \
+            --tag $DOCKER_IMAGE_NAME:latest \
+            --tag $DOCKER_IMAGE_NAME:${flag} \
+            --output=type=registry
